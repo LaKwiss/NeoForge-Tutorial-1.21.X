@@ -123,18 +123,7 @@ public class TutorialMod {
 
     }
 
-    @SubscribeEvent
-    public static void register(final RegisterPayloadHandlersEvent event){
-        final PayloadRegistrar registrar = event.registrar("1");
-        registrar.playBidirectional(
-                ModPayload.TYPE,
-                ModPayload.STREAM_CODEC,
-                new DirectionalPayloadHandler<>(
-                        ClientPayloadHandler::handleDataOnMain,
-                        ServerPayloadHandler::handleDataOnMain
-                )
-        );
-    }
+
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @EventBusSubscriber(modid = MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -163,6 +152,19 @@ public class TutorialMod {
         public static void registerScreens(RegisterMenuScreensEvent event) {
             event.register(ModMenuTypes.PEDESTAL_MENU.get(), PedestalScreen::new);
             event.register(ModMenuTypes.GROWTH_CHAMBER_MENU.get(), GrowthChamberScreen::new);
+        }
+
+        @SubscribeEvent
+        public static void register(final RegisterPayloadHandlersEvent event){
+            final PayloadRegistrar registrar = event.registrar("1");
+            registrar.playBidirectional(
+                    ModPayload.TYPE,
+                    ModPayload.STREAM_CODEC,
+                    new DirectionalPayloadHandler<>(
+                            ClientPayloadHandler::handleDataOnMain,
+                            ServerPayloadHandler::handleDataOnMain
+                    )
+            );
         }
     }
 }
