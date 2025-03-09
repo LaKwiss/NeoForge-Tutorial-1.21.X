@@ -2,12 +2,15 @@ package net.kaupenjoe.tutorialmod.screen.custom;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.kaupenjoe.tutorialmod.TutorialMod;
+import net.kaupenjoe.tutorialmod.networking.ModPayload;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class GrowthChamberScreen extends AbstractContainerScreen<GrowthChamberMenu> {
     private static final ResourceLocation GUI_TEXTURE =
@@ -44,4 +47,22 @@ public class GrowthChamberScreen extends AbstractContainerScreen<GrowthChamberMe
         super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
         this.renderTooltip(pGuiGraphics, pMouseX, pMouseY);
     }
+
+    private void onProcessButtonClicked() {
+        PacketDistributor.sendToServer(new ModPayload(1, ""));
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+
+        this.addRenderableWidget(Button.builder(Component.literal("Process"), button -> onProcessButtonClicked())
+                .pos(x + 100, y + 60)
+                .size(60, 20)
+                .build());
+
+    }
 }
+

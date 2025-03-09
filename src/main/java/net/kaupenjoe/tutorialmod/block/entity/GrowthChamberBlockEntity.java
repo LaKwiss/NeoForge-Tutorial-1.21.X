@@ -30,6 +30,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public class GrowthChamberBlockEntity extends BlockEntity implements MenuProvider {
+    private boolean processing = false;
+
+    public void startProcess() {
+        if (hasRecipe() && !processing) {
+            processing = true;
+            setChanged();
+        }
+    }
+
     public final ItemStackHandler itemHandler = new ItemStackHandler(2) {
         @Override
         protected void onContentsChanged(int slot) {
@@ -113,7 +122,7 @@ public class GrowthChamberBlockEntity extends BlockEntity implements MenuProvide
     }
 
     public void tick(Level level, BlockPos blockPos, BlockState blockState) {
-        if(hasRecipe()) {
+        if(hasRecipe() && processing) {
             increaseCraftingProgress();
             setChanged(level, blockPos, blockState);
 
@@ -121,9 +130,13 @@ public class GrowthChamberBlockEntity extends BlockEntity implements MenuProvide
                 craftItem();
                 resetProgress();
             }
-        } else {
+        } else if (!hasRecipe()) {
             resetProgress();
         }
+    }
+
+    public boolean isProcessing() {
+        return processing;
     }
 
     private void craftItem() {
